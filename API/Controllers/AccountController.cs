@@ -74,5 +74,19 @@ namespace API.Controllers
         {
             return await Context.Users.AnyAsync(x=>x.UserName==UserName.ToLower());
         }
+
+        [HttpGet("GetValidToken")]
+        public async Task<ActionResult<string>> GetValidToken(string UserName)
+        {
+            if(await UserExist(UserName))
+            {
+                var user=await Context.Users.SingleOrDefaultAsync(x=>x.UserName==UserName.ToLower());
+                return TokenService.CreateToken(user);
+            }
+            else
+            {
+                return BadRequest("User does not exist");
+            }
+        }
     }
 }
