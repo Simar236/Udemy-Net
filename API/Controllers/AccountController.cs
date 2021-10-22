@@ -48,7 +48,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> login(loginDTO _lDTO)
+        public async Task<ActionResult<LoginResponseDTO>> login(loginDTO _lDTO)
         {
             var user=await Context.Users.SingleOrDefaultAsync(x=>x.UserName==_lDTO.UserName.ToLower());
             if(user== null)
@@ -67,8 +67,10 @@ namespace API.Controllers
                     }
                 }
             }
-            
-            return TokenService.CreateToken(user);
+            return new LoginResponseDTO{
+                UserName=_lDTO.UserName,
+                Token=TokenService.CreateToken(user)
+            };
         }
         private async Task<bool> UserExist(string UserName)
         {
